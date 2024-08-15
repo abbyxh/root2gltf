@@ -8,67 +8,67 @@
             [
                 "(BeBeampipe_(?!envelope))\\w+|(BeBeampipe(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "BeamPipe": [
             [
                 "(BeamPipe_(?!envelope))\\w+|(BeamPipe(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "BeamPipeShield": [
             [
                 "(BeamPipeShield_(?!envelope))\\w+|(BeamPipeShield(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "BeamPipeShield_noRot": [
             [
                 "(BeamPipeShield_noRot_(?!envelope))\\w+|(BeamPipeShield_noRot(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "Coil": [
             [
                 "(Coil_(?!envelope))\\w+|(Coil(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "CompSol": [
             [
                 "(CompSol_(?!envelope))\\w+|(CompSol(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "EcalBarrel": [
             [
                 "(EcalBarrel_(?!envelope))\\w+|(EcalBarrel(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "EcalEndcap": [
             [
                 "(EcalEndcap_(?!envelope))\\w+|(EcalEndcap(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "HcalBarrel": [
             [
                 "(HcalBarrel_(?!envelope))\\w+|(HcalBarrel(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "HcalEndcap": [
             [
                 "(HcalEndcap_(?!envelope))\\w+|(HcalEndcap(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "HcalRing": [
             [
                 "(HcalRing_(?!envelope))\\w+|(HcalRing(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "InnerTrackers": [
             [
@@ -81,31 +81,31 @@
                 "InnerTrackerInterlink\\w+",
                 "InnerTrackerVertexCable\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ],
         "LumiCal": [
             [
                 "(LumiCal_(?!envelope))\\w+|(LumiCal(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "LumiCalBackShield": [
             [
                 "(LumiCalBackShield_(?!envelope))\\w+|(LumiCalBackShield(?!_))\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ],
         "LumiCalCooling": [
             [
                 "(LumiCalCooling_(?!envelope))\\w+|(LumiCalCooling(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "LumiCalInstrumentation": [
             [
                 "(LumiCalInstrumentation_(?!envelope))\\w+|(LumiCalInstrumentation(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "SET": [
             [
@@ -113,13 +113,13 @@
                 "set_ladder_.*_.*\\w+",
                 "set_ladder_.*_.*_.*\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ],
         "ScreenSol": [
             [
                 "(ScreenSol_(?!envelope))\\w+|(ScreenSol(?!_))\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "SynchRadMask": [
             [
@@ -131,7 +131,7 @@
                 "tpc_sensGas_fwd\\w+",
                 "tpc_row_fwd_.*\\w+"
             ],
-            0.8
+            0.8, "#BF4040"
         ],
         "Vertex": [
             [
@@ -140,19 +140,19 @@
                 "VertexEndcap\\w+",
                 "VertexVerticalCable\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ],
         "YokeBarrel": [
             [
                 "(YokeBarrel_(?!envelope))\\w+|(YokeBarrel(?!_))\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ],
         "YokeEndcap": [
             [
                 "(YokeEndcap_(?!envelope))\\w+|(YokeEndcap(?!_))\\w+"
             ],
-            0.8
+            0.1, "#BF4040"
         ]
     },
     "maxLevel": 3

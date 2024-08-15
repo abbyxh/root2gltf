@@ -67,9 +67,44 @@ function cleanupGeometry(node,
 }
 
 /// deduplicates identical materials in the given gltf file
-function deduplicate(gltf) {
+function deduplicate(gltf, subParts) {
     // deduplicate materials
     console.log("INFO: Materials:");
+
+    //for (const i in gltf["nodes"]) {
+      //  console.log(gltf['nodes'][i]);
+    //}
+
+    const scene_list = [0];
+    for (const i in gltf["scenes"]) {
+        scene_list.push(gltf["scenes"][i]["nodes"][0]);
+    }
+    //console.log(scene_list);
+
+    var corrected_scene_list = [];
+    var counter1 = 0;
+    var num_parts = 0;
+    for (let val of scene_list) {
+        counter1++;
+        for (var i = val; i<=scene_list[counter1]; i++) {
+            if (gltf["nodes"][i]["name"]) {
+                num_parts++;
+            }
+        }
+        corrected_scene_list.push(num_parts);
+    }
+    corrected_scene_list.pop()
+    //console.log(corrected_scene_list);
+
+    var counter2 = 0;
+    var links = {}
+    for (let subdetect of corrected_scene_list) {
+        counter2++;
+        for (let i = subdetect; i<=corrected_scene_list[counter2]; i++) {
+            links[i] = counter2;
+        }
+    }
+
     // scan them, build table of correspondance
     var kept = []
     var links = {}
@@ -89,11 +124,25 @@ function deduplicate(gltf) {
             kept.push(materials[index]);
         }
     }
+
+    let kept_2 = [];
+    let keeping = gltf["materials"][0];
+    for (let num_colors in corrected_scene_list) {
+        kept_2.push(keeping);
+        console.log(keeping)
+    }
+    console.log(kept_2.length);
+    //console.log(links);
     // now rewrite the materials table and fix the meshes
     gltf["materials"] = kept;
+    //console.log(gltf['materials'])
+    console.log(gltf["materials"][0]["pbrMetallicRoughness"]["baseColorFactor"]);
+    gltf["materials"][0]["pbrMetallicRoughness"]["baseColorFactor"] = [1, 0.3, 0.3];
+    
     for (const mesh of gltf["meshes"]) {
         for(const primitive of mesh["primitives"]) {
             if ("material" in primitive) {
+                //console.log(links[primitive]);
                 primitive["material"] = links[primitive["material"]];
             }
         }
@@ -130,14 +179,14 @@ function deduplicate(gltf) {
 }
 
 /// convert given geometry to GLTF
-async function convert_geometry(obj3d, outputFileName) {
+async function convert_geometry(obj3d, outputFileName, subParts) {
     // console.log(obj3d);
     console.log("INFO: Exporting to GLTF");
     const exporter = new GLTFExporter();
 
     exporter.parse(obj3d, function(gltf) {
-        // console.log(JSON.stringify(gltf));
-        const deduplicatedGltf = deduplicate(gltf);
+         //console.log(JSON.stringify(gltf));
+        const deduplicatedGltf = deduplicate(gltf, subParts);
         fs.writeFile(outputFileName, JSON.stringify(deduplicatedGltf), 'utf8', function (err) {
             if (err) {
                 console.log("ERROR: File can't be saved!");
@@ -273,7 +322,7 @@ async function internal_convert_geometry(obj,
         scenes.push(scene);
     }
     console.log('      ' + scenes.length + ' scenes generated');
-    await convert_geometry(scenes, outputFileName);
+    await convert_geometry(scenes, outputFileName, subParts);
 }
 
 async function convertGeometry(inputFilePath,

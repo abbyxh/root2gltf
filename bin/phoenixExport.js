@@ -66,10 +66,8 @@ function cleanupGeometry(node,
     }
 }
 
-/// deduplicates identical materials in the given gltf file
-function deduplicate(gltf, subParts) {
-    // deduplicate materials
-    console.log("INFO: Materials:");
+//function to generate alternative colouring that the user can set within the config file
+function alternative_colouring(gltf, subParts) {
 
     const color_list = []
     for (const [name, entry] of Object.entries(subParts)) {
@@ -108,7 +106,12 @@ function deduplicate(gltf, subParts) {
     var index = 0;
     for (let color of gltf["materials"]) {
         count++;
-        color["pbrMetallicRoughness"]["baseColorFactor"] = color_list[index];
+        if (color_list[index]){
+            color["pbrMetallicRoughness"]["baseColorFactor"] = color_list[index];
+        }
+        else {
+            console.log("Automatic colouring applied");
+        }
         if (corrected_scene_list.includes(count)) {
             index++;
             if (corrected_scene_list[index] == 'undefined') {
@@ -116,6 +119,15 @@ function deduplicate(gltf, subParts) {
             }
         }
     }
+    return gltf["materials"]
+}
+
+/// deduplicates identical materials in the given gltf file
+function deduplicate(gltf, subParts) {
+    // deduplicate materials
+    console.log("INFO: Materials:");
+
+    gltf["materials"] = alternative_colouring(gltf, subParts);
 
     // scan them, build table of correspondance
     var kept = []
@@ -126,7 +138,6 @@ function deduplicate(gltf, subParts) {
         var found = false;
         for (var kindex = 0; kindex < kept.length; kindex++) {
             if (JSON.stringify(kept[kindex]) == JSON.stringify(materials[index])) {
-                //console.log(JSON.stringify(kept[kindex])+ "   " + JSON.stringify(materials[index]));
                 links[index] = kindex;
                 found = true;
                 break;
@@ -140,11 +151,14 @@ function deduplicate(gltf, subParts) {
 
     // now rewrite the materials table and fix the meshes
     gltf["materials"] = kept;
+
+    //for (var mat of gltf["materials"]) {
+        //console.log(mat);
+    //}
     
     for (const mesh of gltf["meshes"]) {
         for(const primitive of mesh["primitives"]) {
             if ("material" in primitive) {
-                //console.log(links[primitive]);
                 primitive["material"] = links[primitive["material"]];
             }
         }

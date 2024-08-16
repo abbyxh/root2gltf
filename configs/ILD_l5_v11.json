@@ -152,7 +152,7 @@
             [
                 "(YokeEndcap_(?!envelope))\\w+|(YokeEndcap(?!_))\\w+"
             ],
-            0.3, [0.09,0.76,0.76,1]
+            0.3
         ]
     },
     "maxLevel": 3

@@ -71,37 +71,49 @@ function deduplicate(gltf, subParts) {
     // deduplicate materials
     console.log("INFO: Materials:");
 
-    //for (const i in gltf["nodes"]) {
-      //  console.log(gltf['nodes'][i]);
-    //}
+    const color_list = []
+    for (const [name, entry] of Object.entries(subParts)) {
+        let coloring = entry[2];
+        color_list.push(coloring);
+    }
 
     const scene_list = [0];
     for (const i in gltf["scenes"]) {
         scene_list.push(gltf["scenes"][i]["nodes"][0]);
     }
-    //console.log(scene_list);
 
+    var num_checker = 0
     var corrected_scene_list = [];
     var counter1 = 0;
     var num_parts = 0;
-    for (let val of scene_list) {
+    for (let val in scene_list) {
         counter1++;
-        for (var i = val; i<=scene_list[counter1]; i++) {
+        for (var i = scene_list[val]; i<=scene_list[counter1]; i++) {
             if (gltf["nodes"][i]["name"]) {
                 num_parts++;
             }
         }
-        corrected_scene_list.push(num_parts);
+        if (num_checker == num_parts){
+            corrected_scene_list.push("undefined");
+        }
+        else {
+            corrected_scene_list.push(num_parts);
+        }
+        num_checker = num_parts;
+        
     }
     corrected_scene_list.pop()
-    //console.log(corrected_scene_list);
 
-    var counter2 = 0;
-    var links = {}
-    for (let subdetect of corrected_scene_list) {
-        counter2++;
-        for (let i = subdetect; i<=corrected_scene_list[counter2]; i++) {
-            links[i] = counter2;
+    var count = 0;
+    var index = 0;
+    for (let color of gltf["materials"]) {
+        count++;
+        color["pbrMetallicRoughness"]["baseColorFactor"] = color_list[index];
+        if (corrected_scene_list.includes(count)) {
+            index++;
+            if (corrected_scene_list[index] == 'undefined') {
+                index++;
+            }
         }
     }
 
@@ -114,6 +126,7 @@ function deduplicate(gltf, subParts) {
         var found = false;
         for (var kindex = 0; kindex < kept.length; kindex++) {
             if (JSON.stringify(kept[kindex]) == JSON.stringify(materials[index])) {
+                //console.log(JSON.stringify(kept[kindex])+ "   " + JSON.stringify(materials[index]));
                 links[index] = kindex;
                 found = true;
                 break;
@@ -125,19 +138,8 @@ function deduplicate(gltf, subParts) {
         }
     }
 
-    let kept_2 = [];
-    let keeping = gltf["materials"][0];
-    for (let num_colors in corrected_scene_list) {
-        kept_2.push(keeping);
-        console.log(keeping)
-    }
-    console.log(kept_2.length);
-    //console.log(links);
     // now rewrite the materials table and fix the meshes
     gltf["materials"] = kept;
-    //console.log(gltf['materials'])
-    console.log(gltf["materials"][0]["pbrMetallicRoughness"]["baseColorFactor"]);
-    gltf["materials"][0]["pbrMetallicRoughness"]["baseColorFactor"] = [1, 0.3, 0.3];
     
     for (const mesh of gltf["meshes"]) {
         for(const primitive of mesh["primitives"]) {

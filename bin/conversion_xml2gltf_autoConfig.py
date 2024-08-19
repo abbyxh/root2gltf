@@ -7,7 +7,7 @@ import os
 def main():
     parser = argparse.ArgumentParser(description='Convert detector')
     parser.add_argument('-cm', '--compact_files', help='Compact file location(s)',
-                        required=True, type=str, nargs='+')
+                        default='', type=str)
     parser.add_argument('-cn_in', '--config_file_in', help='Json file of detector structure to be given',
                         default='', type=str)
     parser.add_argument('-cn_out', '--config_file_out', help='Automatic json file of detector structure file path out',
@@ -20,32 +20,34 @@ def main():
                         default='', type=str)
     parser.add_argument('-d', '--depth', help='Level of layers in detector to consider in the conversion',
                         default=10, type=int)
+    parser.add_argument('-c', '--color', help='Default colours for detector (choose ild or leave blank)',
+                        default='', type=str)
     parser.add_argument('-hide', '--hidden_children', help='Parts of the detector to be hidden',
                         default=['thereisnodetectorparthere'], type=str, nargs='+')
     args = parser.parse_args()
 
     ## Loop for multiple compact files (currently not working)
-    for cfile in args.compact_files: 
+    ##for cfile in args.compact_files: 
         ## For if both a root and config file are given               
-        if args.in_root and args.config_file_in:
-            config_file, root_path = args.config_file_in, args.in_root
+    if args.in_root and args.config_file_in:
+        config_file, root_path = args.config_file_in, args.in_root
 
-        ## For if only a root file is given
-        elif args.in_root and not args.config_file_in:
-            config_file = automatic_config(args.config_file_out, cfile, args.depth, args.hidden_children)
-            root_path = args.in_root
+    ## For if only a root file is given
+    elif args.in_root and not args.config_file_in:
+        config_file = automatic_config(args.config_file_out, args.compact_files, args.depth, args.color, args.hidden_children)
+        root_path = args.in_root
 
-        ## For if only a config file is given
-        elif not args.in_root and args.config_file_in:
-            root_path = root_convert(cfile, args.out_root, args.depth)
-            config_file = args.config_file_in
+    ## For if only a config file is given
+    elif not args.in_root and args.config_file_in:
+        root_path = root_convert(args.compact_files, args.out_root, args.depth)
+        config_file = args.config_file_in
 
-        ## For if neither file is given
-        else:
-            root_path = root_convert(cfile, args.out_root, args.depth)
-            config_file = automatic_config(args.config_file_out, cfile, args.depth, args.hidden_children)
-            
-        gltf_convert(config_file, args.out_gltf, root_path)
+    ## For if neither file is given
+    else:
+        root_path = root_convert(args.compact_files, args.out_root, args.depth)
+        config_file = automatic_config(args.config_file_out, args.compact_files, args.depth, args.color, args.hidden_children)
+        
+    gltf_convert(config_file, args.out_gltf, root_path)
                     
 def root_convert(cfile, out_path, visibility):
     ## Converts an xml file to root file
@@ -65,11 +67,11 @@ def root_convert(cfile, out_path, visibility):
 
     return root_path
 
-def automatic_config(config_out, cfile, depth, hide):
+def automatic_config(config_out, cfile, depth, color, hide):
     ## Creates an automatic configuaration file if one isn't given using the 'configfile_generator.py'
     ## Determines automatic outpath of config file
     config_file = determine_outpath(config_out, cfile, "json")
-    subprocess.run(["python", "configfile_generator.py", "--compact", f'{cfile}', '--max_depth', f'{depth}', '--config_path', f'{config_file}', '--hide_list', ', '.join(hide)])
+    subprocess.run(["python", "configfile_generator.py", "--compact", f'{cfile}', '--max_depth', f'{depth}', '--config_path', f'{config_file}', '--hide_list', ', '.join(hide), '--coloring', f'{color}'])
 
     ## Asks the user if they would like to exit the run to edit the automatic config file
     config_edit = input(f'Would you like to exit and edit the automatic cofiguration file {config_file}? [y/n]')

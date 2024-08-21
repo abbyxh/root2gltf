@@ -29,7 +29,7 @@ def main():
     ## Loop for multiple compact files (currently not working)
     ##for cfile in args.compact_files: 
         ## For if both a root and config file are given               
-    if args.in_root and args.config_file_in:
+    if args.in_root and args.config_file_in: 
         config_file, root_path = args.config_file_in, args.in_root
 
     ## For if only a root file is given
@@ -97,21 +97,16 @@ def determine_outpath(out_path, file, ending):
         slash_list = []
         for i in file:
             counter += 1
-            if i == '/':
-                slash_list.append(counter)
-            if i == '.':
-                dot = counter
+            if i == '/': slash_list.append(counter)
+            if i == '.': dot = counter
 
-        if not slash_list:
+        if not slash_list: 
             path = f'../{ending}_files/{file[:dot-1]}.{ending}'
         else:
             last_slash = max(slash_list)
-            if ending == 'json':
-                path = f'../configs/{file[last_slash:dot-1]}.{ending}'
-            else:
-                path = f'../{ending}_files/{file[last_slash:dot-1]}.{ending}'          
-    else:
-        path = out_path
+            if ending == 'json': path = f'../configs/{file[last_slash:dot-1]}.{ending}'
+            else: path = f'../{ending}_files/{file[last_slash:dot-1]}.{ending}'          
+    else: path = out_path
     return path
 
 def program_questions(file, response, r_c):

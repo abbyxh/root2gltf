@@ -61,11 +61,9 @@ def add_ild_colors(subdetector):
                         "Fcal": [0.67, 0.66, 0.67]
                         }
     for s in subdetector_dict:
-        find_subdetector = re.search(f'{s}', f'{subdetector}')
-        if find_subdetector:
-            return subdetector_dict[s]
-    if find_subdetector == None:
-        return [0.5,0.5,0.5]
+        find_subdetector = re.search(f'{s}', f'{subdetector}',re.IGNORECASE)
+        if find_subdetector: return subdetector_dict[s]
+    if find_subdetector == None: return [0.57,0.63,0.81]
 
 
 def tree(detElement, depth, maxDepth):
@@ -74,11 +72,8 @@ def tree(detElement, depth, maxDepth):
     depth += 1
     children = detElement.children()
     for raw_name, child in children:
-        if depth > maxDepth:
-            tree(child, depth, maxDepth)
-        else:
-            dictionary = tree(child, depth, maxDepth)
-            nd.update({raw_name: dictionary})
+        if depth > maxDepth: tree(child, depth, maxDepth)
+        else: dictionary = tree(child, depth, maxDepth); nd.update({raw_name: dictionary})
     return nd
 
 def post_processing(obj, main_parts, hidden, coloring, subParts={}, sublist= [], hide_children= []):
@@ -86,27 +81,29 @@ def post_processing(obj, main_parts, hidden, coloring, subParts={}, sublist= [],
     for k, v in obj.items():
         if k in main_parts:
             ## Look for hidden children that we want to add to the hidden_children list and ignore
-            y = re.search(f'{hidden}', f'{k}')
+            y = re.search(f'{hidden}', f'{k}', re.IGNORECASE)
             if y == None:
-                #removes envelopes from being featured in the final geometry
+                ## Removes envelopes from being featured in the final geometry
                 sublist = [f'({k}_(?!envelope))\\w+|({k}(?!_))\w+']  
                 outer_list = []
                 outer_list.append(sublist)
                 outer_list.append(0.8)
-                if coloring == "ild":
-                    color = add_ild_colors(k)
-                    outer_list.append(color)
+
+                ## Adds automatic ILD coloring if the user asks
+                if coloring == "ild": color = add_ild_colors(k); outer_list.append(color)
+
                 subParts.update({str(k): outer_list})
                 post_processing(v, main_parts, hidden, coloring, subParts, sublist)
 
             else:
                 hide_children.append(f'{k}')
+                sublist = []
                 post_processing(v, main_parts, hidden, coloring, subParts, sublist, hide_children)
                 
         else:
             k_new = process_name(f"{k}\\w+")
             ## The function ignores components with common names that can often be in multiple detectors: module, stave, layer...
-            x = re.search("module|stave|layer|Calorimeter|component", k_new)
+            x = re.search("module|stave|layer|Calorimeter|component", k_new, re.IGNORECASE)
             if k_new not in sublist and x == None:
                 sublist.append(f'{k_new}')
             post_processing(v, main_parts, hidden, coloring, subParts, sublist, hide_children)

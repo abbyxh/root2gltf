@@ -80,13 +80,13 @@ function alternative_colouring(gltf, subParts) {
         scene_list.push(gltf["scenes"][i]["nodes"][0]);
     }
 
-    var num_checker = 0
+    var num_checker = 0;
     var corrected_scene_list = [];
-    var counter1 = 0;
+    var subdetector_counter = 0;
     var num_parts = 0;
     for (let val in scene_list) {
-        counter1++;
-        for (var i = scene_list[val]; i<=scene_list[counter1]; i++) {
+        subdetector_counter++;
+        for (var i = scene_list[val]; i<=scene_list[subdetector_counter]; i++) {
             if (gltf["nodes"][i]["name"]) {
                 num_parts++;
             }

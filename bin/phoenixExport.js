@@ -66,7 +66,12 @@ function cleanupGeometry(node,
     }
 }
 
-//function to generate alternative colouring that the user can set within the config file
+//function to generate alternative colouring
+//configuration file sets the colours for each of the mother volumes (layer below the world)
+//code runs through the list of all sub-detectors under the mother volume
+//assigns the new colour to each layer underneath the mother volume
+//when a mother volume changes, the colour changes and the same process occurrs
+
 function alternative_colouring(gltf, subParts) {
 
     const color_list = []
@@ -151,10 +156,6 @@ function deduplicate(gltf, subParts) {
 
     // now rewrite the materials table and fix the meshes
     gltf["materials"] = kept;
-
-    //for (var mat of gltf["materials"]) {
-        //console.log(mat);
-    //}
     
     for (const mesh of gltf["meshes"]) {
         for(const primitive of mesh["primitives"]) {

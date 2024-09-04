@@ -1280,7 +1280,7 @@ class GLTFWriter {
 		}
 		// pbrMetallicRoughness.baseColorFactor
 		const color = material.color.toArray().concat( [ material.opacity ] );
-		//console.log(.userData);
+		
 		if ( ! equalArray( color, [ 1, 1, 1, 1 ] ) ) {
 
 			materialDef.pbrMetallicRoughness.baseColorFactor = color;
@@ -1663,7 +1663,7 @@ class GLTFWriter {
 		}
 
 		const isMultiMaterial = Array.isArray( mesh.material );
-		//console.log(mesh.material);
+		
 		if ( isMultiMaterial && geometry.groups.length === 0 ) return null;
 
 		const materials = isMultiMaterial ? mesh.material : [ mesh.material ];
@@ -2078,7 +2078,7 @@ class GLTFWriter {
 		}
 
 		if ( nodes.length > 0 ) sceneDef.nodes = nodes;
-		//console.log(scene);
+		
 		this.serializeUserData( scene, sceneDef );
 
 	}

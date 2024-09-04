@@ -63,7 +63,7 @@ def add_ild_colors(subdetector):
     for s in subdetector_dict:
         find_subdetector = re.search(f'{s}', f'{subdetector}',re.IGNORECASE)
         if find_subdetector: return subdetector_dict[s]
-    if find_subdetector == None: return [0.57,0.63,0.81]
+    return [0.57,0.63,0.81]
 
 
 def tree(detElement, depth, maxDepth):
@@ -72,8 +72,11 @@ def tree(detElement, depth, maxDepth):
     depth += 1
     children = detElement.children()
     for raw_name, child in children:
-        if depth > maxDepth: tree(child, depth, maxDepth)
-        else: dictionary = tree(child, depth, maxDepth); nd.update({raw_name: dictionary})
+        if depth > maxDepth: 
+            tree(child, depth, maxDepth)
+        else: 
+            dictionary = tree(child, depth, maxDepth)
+            nd.update({raw_name: dictionary})
     return nd
 
 def post_processing(obj, main_parts, hidden, coloring, subParts={}, sublist= [], hide_children= []):
@@ -90,7 +93,9 @@ def post_processing(obj, main_parts, hidden, coloring, subParts={}, sublist= [],
                 outer_list.append(0.8)
 
                 ## Adds automatic ILD coloring if the user asks
-                if coloring == "ild": color = add_ild_colors(k); outer_list.append(color)
+                if coloring == "ild": 
+                    color = add_ild_colors(k)
+                    outer_list.append(color)
 
                 subParts.update({str(k): outer_list})
                 post_processing(v, main_parts, hidden, coloring, subParts, sublist)
